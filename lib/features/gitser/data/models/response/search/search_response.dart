@@ -1,3 +1,4 @@
+import 'package:flutter_gitser/features/gitser/data/models/response/search/search_result.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/users/user_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -5,13 +6,13 @@ part 'search_response.g.dart';
 
 @JsonSerializable()
 class SearchResponse {
-  final int? totalCount;
-  final bool? incompleteResults;
-  final List<UserResponseItem>? items;
+  final int? total_count;
+  final bool? incomplete_results;
+  final List<SearchResult>? items;
 
   SearchResponse({
-    this.totalCount,
-    this.incompleteResults,
+    this.total_count,
+    this.incomplete_results,
     this.items,
   });
 

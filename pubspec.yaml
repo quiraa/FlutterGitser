@@ -48,9 +48,6 @@ dependencies:
   # * Hooks
   flutter_hooks: ^0.20.5
 
-  # * Stylish Bottom Navbar
-  persistent_bottom_nav_bar: ^5.0.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,10 +1,12 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gitser/config/routes/app_router.dart';
 import 'package:flutter_gitser/config/routes/screen_routes.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class SplashPage extends HookWidget {
-  const SplashPage({Key? key}) : super(key: key);
+class SplashScreen extends HookWidget {
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +20,15 @@ class SplashPage extends HookWidget {
       return () {};
     }, []);
 
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('Gitser Flutter'),
+        child: const Text(
+          'Gitser Flutter',
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }

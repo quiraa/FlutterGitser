@@ -3,71 +3,71 @@ part 'detail_response.g.dart';
 
 @JsonSerializable()
 class DetailResponse {
-  final String? avatarUrl;
+  final String? avatar_url;
   final dynamic bio;
   final String? blog;
   final String? company;
   final dynamic email;
-  final String? eventsUrl;
+  final String? events_url;
   final int? followers;
   final int? following;
-  final String? followersUrl;
-  final String? followingUrl;
-  final String? gistsUrl;
-  final String? gravatarId;
+  final String? followers_url;
+  final String? following_url;
+  final String? gists_url;
+  final String? gravatar_id;
   final dynamic hireable;
-  final String? htmlUrl;
+  final String? html_url;
   final int? id;
   final String? location;
   final String? login;
   final String? name;
-  final String? nodeId;
-  final String? organizationsUrl;
-  final int? publicGists;
-  final int? publicRepos;
-  final String? receivedEventsUrl;
-  final String? reposUrl;
-  final bool? siteAdmin;
-  final String? starredUrl;
-  final String? subscriptionsUrl;
-  final dynamic twitterUsername;
+  final String? node_id;
+  final String? organizations_url;
+  final int? public_gists;
+  final int? public_repos;
+  final String? received_events_url;
+  final String? repos_url;
+  final bool? site_admin;
+  final String? starred_url;
+  final String? subscriptions_url;
+  final dynamic twitter_username;
   final String? type;
-  final String? updatedAt;
-  final String? createdAt;
+  final String? updated_at;
+  final String? created_at;
   final String? url;
 
   DetailResponse({
-    this.avatarUrl,
+    this.avatar_url,
     this.bio,
     this.blog,
     this.company,
     this.email,
-    this.eventsUrl,
+    this.events_url,
     this.followers,
-    this.followersUrl,
+    this.followers_url,
     this.following,
-    this.followingUrl,
-    this.gistsUrl,
-    this.gravatarId,
+    this.following_url,
+    this.gists_url,
+    this.gravatar_id,
     this.hireable,
-    this.htmlUrl,
+    this.html_url,
     this.id,
     this.location,
     this.login,
     this.name,
-    this.nodeId,
-    this.organizationsUrl,
-    this.publicGists,
-    this.publicRepos,
-    this.receivedEventsUrl,
-    this.reposUrl,
-    this.siteAdmin,
-    this.starredUrl,
-    this.subscriptionsUrl,
-    this.twitterUsername,
+    this.node_id,
+    this.organizations_url,
+    this.public_gists,
+    this.public_repos,
+    this.received_events_url,
+    this.repos_url,
+    this.site_admin,
+    this.starred_url,
+    this.subscriptions_url,
+    this.twitter_username,
     this.type,
-    this.updatedAt,
-    this.createdAt,
+    this.updated_at,
+    this.created_at,
     this.url,
   });
 

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_gitser/core/constants/constants.dart';
 import 'package:flutter_gitser/core/resources/data_state.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/detail/detail_response.dart';
+import 'package:flutter_gitser/features/gitser/data/models/response/detail/repository_response.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/search/search_response.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/users/user_response.dart';
 import 'package:flutter_gitser/features/gitser/data/sources/remote/api_service.dart';
@@ -17,7 +18,7 @@ class RepositoryImpl implements Repository {
   @override
   Future<DataState<List<UserResponseItem>>> getAllUsers() async {
     try {
-      final listUsers = await api.getAllUsers('Bearer ${Constants.token}');
+      final listUsers = await api.getAllUsers(Constants.token);
 
       if (listUsers.response.statusCode == HttpStatus.ok) {
         return DataSuccess(listUsers.data);
@@ -130,6 +131,30 @@ class RepositoryImpl implements Repository {
             type: DioExceptionType.badResponse,
             response: search.response,
             requestOptions: search.response.requestOptions,
+          ),
+        );
+      }
+    } on DioException catch (error) {
+      return DataError(error);
+    }
+  }
+
+  @override
+  Future<DataState<List<RepositoryResponse>>> getUserRepositories(
+    String username,
+  ) async {
+    try {
+      final repos = await api.getUserRepositories(username);
+
+      if (repos.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(repos.data);
+      } else {
+        return DataError(
+          DioException(
+            error: repos.response.statusMessage,
+            type: DioExceptionType.badResponse,
+            response: repos.response,
+            requestOptions: repos.response.requestOptions,
           ),
         );
       }

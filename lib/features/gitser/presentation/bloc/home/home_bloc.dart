@@ -16,7 +16,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   void onGetAllUsersEvent(
-      GetAllUsersEvent event, Emitter<HomeState> emit) async {
+    GetAllUsersEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(const HomeLoadingState());
+
     final state = await getUsersUseCase();
 
     if (state is DataSuccess) {
@@ -29,16 +33,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   void onSearchUsersEvent(
-      SearchUserEvent event, Emitter<HomeState> emit) async {
-    final state =
-        await searchUsersUseCase(params: SearchUsersParams(event.query!));
+    SearchUserEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    emit(const SearchLoadingState());
+    final state = await searchUsersUseCase(
+      params: SearchUsersParams(
+        // authorization: Constants.token,
+        query: event.query,
+      ),
+    );
 
     if (state is DataSuccess) {
-      emit(HomeSuccessState(state.data!.items!));
+      emit(SearchSuccessState(state.data!));
     }
 
     if (state is DataError) {
-      emit(HomeErrorState(state.error!));
+      emit(SearchErrorState(state.error!));
     }
   }
 }

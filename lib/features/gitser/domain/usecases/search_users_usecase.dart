@@ -11,12 +11,16 @@ class SearchUsersUseCase
 
   @override
   Future<DataState<SearchResponse>> call({SearchUsersParams? params}) {
-    return repository.searchUserByUsername(params!.query);
+    return repository.searchUserByUsername(
+      params!.query!,
+    );
   }
 }
 
 class SearchUsersParams {
-  final String query;
+  final String? query;
 
-  SearchUsersParams(this.query);
+  SearchUsersParams({
+    this.query,
+  });
 }
