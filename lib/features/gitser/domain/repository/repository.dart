@@ -1,6 +1,6 @@
 import 'package:flutter_gitser/core/resources/data_state.dart';
+import 'package:flutter_gitser/features/gitser/data/models/entities/favorite_entity.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/detail/detail_response.dart';
-import 'package:flutter_gitser/features/gitser/data/models/response/detail/repository_response.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/search/search_response.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/users/user_response.dart';
 
@@ -23,7 +23,11 @@ abstract class Repository {
     String username,
   );
 
-  Future<DataState<List<RepositoryResponse>>> getUserRepositories(
-    String username,
-  );
+  Future<List<FavoriteUser>> getAllFavorites();
+
+  Future<void> insertFavorite(FavoriteUser favorite);
+
+  Future<void> deleteAllFavorite();
+
+  Future<void> deleteFavorite(int userId);
 }

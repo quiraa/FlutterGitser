@@ -6,7 +6,7 @@ import 'package:flutter_gitser/di/injection.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/detail_bloc.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/followers/followers_bloc.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/following/following_bloc.dart';
-import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/repository/repository_bloc.dart';
+import 'package:flutter_gitser/features/gitser/presentation/bloc/favorite/favorite_bloc.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/home/home_event.dart';
 
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<DetailBloc>(create: (context) => injection()),
         BlocProvider<FollowersBloc>(create: (context) => injection()),
         BlocProvider<FollowingBloc>(create: (context) => injection()),
-        BlocProvider<RepositoryBloc>(create: (context) => injection()),
+        BlocProvider<FavoriteBloc>(create: (context) => injection()),
       ],
       child: MaterialApp(
         title: 'Flutter Gitser',

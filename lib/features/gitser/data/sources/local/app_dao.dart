@@ -9,6 +9,9 @@ abstract class AppDao {
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertUserToFavorite(FavoriteUser favorite);
 
-  @delete
-  Future<void> deleteUserFromFavorite(FavoriteUser favorite);
+  @Query('DELETE FROM favorite')
+  Future<void> deleteAllFavorite();
+
+  @Query('DELETE FROM favorite WHERE id = :userId')
+  Future<void> deleteFavorite(int userId);
 }

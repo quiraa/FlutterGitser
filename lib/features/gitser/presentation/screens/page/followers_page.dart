@@ -50,7 +50,7 @@ class FollowersPage extends HookWidget {
             return FollowersContent(
               followers: state.response!,
               onFollowersClicked: (username) {
-                AppRouter.push(
+                AppRouter.pushAndReplace(
                   context,
                   ScreenRoutes.detail,
                   arguments: username,

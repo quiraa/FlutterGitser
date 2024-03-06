@@ -5,16 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gitser/config/routes/app_router.dart';
 import 'package:flutter_gitser/config/themes/typography.dart';
+import 'package:flutter_gitser/di/injection.dart';
+import 'package:flutter_gitser/features/gitser/data/models/entities/favorite_entity.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/detail/detail_response.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/detail_bloc.dart';
+import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/detail_event.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/detail_state.dart';
+import 'package:flutter_gitser/features/gitser/presentation/bloc/favorite/favorite_bloc.dart';
+import 'package:flutter_gitser/features/gitser/presentation/bloc/favorite/favorite_event.dart';
+import 'package:flutter_gitser/features/gitser/presentation/bloc/favorite/favorite_state.dart';
 import 'package:flutter_gitser/features/gitser/presentation/screens/page/followers_page.dart';
 import 'package:flutter_gitser/features/gitser/presentation/screens/page/following_page.dart';
-import 'package:flutter_gitser/features/gitser/presentation/screens/page/repos_page.dart';
+import 'package:flutter_gitser/features/gitser/presentation/widgets/favorite_button.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class DetailScreen extends HookWidget {
-  final String? username;
+  final String username;
 
   const DetailScreen({
     Key? key,
@@ -23,6 +29,18 @@ class DetailScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => injection<DetailBloc>()
+        ..add(
+          GetDetailUserEvent(username),
+        ),
+      child: Scaffold(
+        body: _buildBody(),
+      ),
+    );
+  }
+
+  _buildBody() {
     return BlocBuilder<DetailBloc, DetailState>(
       builder: (context, state) {
         switch (state.runtimeType) {
@@ -44,7 +62,7 @@ class DetailScreen extends HookWidget {
 
           case DetailSuccessState:
             return DetailContent(
-              username: username!,
+              username: username,
               user: state.response!,
             );
 
@@ -77,6 +95,9 @@ class _DetailContentState extends State<DetailContent>
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<FavoriteBloc>(context).add(
+      CheckFavoriteEvent(widget.user.id ?? 0),
+    );
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -91,7 +112,54 @@ class _DetailContentState extends State<DetailContent>
     return Scaffold(
       appBar: _buildAppBar(context),
       body: _buildBody(context),
+      floatingActionButton: BlocBuilder<FavoriteBloc, FavoriteState>(
+        builder: (context, state) {
+          return _buildFavoriteFab(state);
+        },
+      ),
     );
+  }
+
+  Widget _buildFavoriteFab(FavoriteState state) {
+    if (state is FavoritedState) {
+      return FavoriteButton(
+        isBookmark: true,
+        onFabClick: () {
+          BlocProvider.of<FavoriteBloc>(context).add(
+            RemoveFavoriteEvent(widget.user.id ?? 0),
+          );
+        },
+      );
+    } else if (state is NotFavoritedState) {
+      return FavoriteButton(
+        isBookmark: false,
+        onFabClick: () {
+          final favorite = FavoriteUser(
+            widget.user.id,
+            widget.user.avatar_url,
+            widget.user.login,
+          );
+          BlocProvider.of<FavoriteBloc>(context).add(
+            AddToFavoriteEvent(favorite),
+          );
+          BlocProvider.of<FavoriteBloc>(context).add(
+            const GetAllFavoriteEvent(),
+          );
+        },
+      );
+    } else {
+      // Default state
+      return FavoriteButton(
+        isBookmark: false,
+        onFabClick: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Null is Clicked'),
+            ),
+          );
+        },
+      );
+    }
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
@@ -105,18 +173,6 @@ class _DetailContentState extends State<DetailContent>
       ),
       centerTitle: true,
       automaticallyImplyLeading: false,
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.favorite_rounded,
-              color: Colors.redAccent,
-            ),
-          ),
-        )
-      ],
     );
   }
 
@@ -198,18 +254,14 @@ class _DetailContentState extends State<DetailContent>
   Widget _buildTabBar() {
     return TabBar(
       controller: _tabController,
-      tabs: const [
+      tabs: [
         Tab(
-          icon: Icon(Icons.dashboard_rounded),
-          text: 'Repositories',
+          icon: const Icon(Icons.group_rounded),
+          text: '${widget.user.followers} Followers',
         ),
         Tab(
-          icon: Icon(Icons.group_rounded),
-          text: 'Followers',
-        ),
-        Tab(
-          icon: Icon(Icons.groups_2_rounded),
-          text: 'Following',
+          icon: const Icon(Icons.groups_2_rounded),
+          text: '${widget.user.following} Following',
         ),
       ],
     );
@@ -219,9 +271,6 @@ class _DetailContentState extends State<DetailContent>
     return TabBarView(
       controller: _tabController,
       children: [
-        ReposPage(
-          username: widget.username,
-        ),
         FollowersPage(
           username: widget.username,
         ),

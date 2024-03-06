@@ -3,6 +3,7 @@ import 'package:floor/floor.dart';
 @Entity(tableName: 'favorite')
 class FavoriteUser {
   @PrimaryKey()
+  @ColumnInfo(name: 'id')
   final int? userId;
 
   @ColumnInfo(name: 'photo')

@@ -4,10 +4,6 @@ import 'package:flutter_gitser/config/routes/app_router.dart';
 import 'package:flutter_gitser/config/routes/screen_routes.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/search/search_result.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/users/user_response.dart';
-import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/detail_bloc.dart';
-import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/detail_event.dart';
-import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/followers/followers_bloc.dart';
-import 'package:flutter_gitser/features/gitser/presentation/bloc/detail/followers/followers_event.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/home/home_bloc.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/home/home_event.dart';
 import 'package:flutter_gitser/features/gitser/presentation/bloc/home/home_state.dart';
@@ -56,9 +52,6 @@ class HomeScreen extends HookWidget {
                   ScreenRoutes.detail,
                   arguments: username,
                 );
-                BlocProvider.of<DetailBloc>(context).add(
-                  GetDetailUserEvent(username),
-                );
               },
             );
 
@@ -82,12 +75,6 @@ class HomeScreen extends HookWidget {
             return SearchContent(
               searchResults: state.searchResponse!.items!,
               onUserClicked: (username) {
-                BlocProvider.of<DetailBloc>(context).add(
-                  GetDetailUserEvent(username),
-                );
-                BlocProvider.of<FollowersBloc>(context).add(
-                  GetAllFollowersEvent(username),
-                );
                 AppRouter.push(
                   context,
                   ScreenRoutes.detail,

@@ -3,17 +3,19 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_gitser/core/constants/constants.dart';
 import 'package:flutter_gitser/core/resources/data_state.dart';
+import 'package:flutter_gitser/features/gitser/data/models/entities/favorite_entity.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/detail/detail_response.dart';
-import 'package:flutter_gitser/features/gitser/data/models/response/detail/repository_response.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/search/search_response.dart';
 import 'package:flutter_gitser/features/gitser/data/models/response/users/user_response.dart';
+import 'package:flutter_gitser/features/gitser/data/sources/local/app_database.dart';
 import 'package:flutter_gitser/features/gitser/data/sources/remote/api_service.dart';
 import 'package:flutter_gitser/features/gitser/domain/repository/repository.dart';
 
 class RepositoryImpl implements Repository {
   final ApiService api;
+  final AppDatabase database;
 
-  RepositoryImpl(this.api);
+  RepositoryImpl(this.api, this.database);
 
   @override
   Future<DataState<List<UserResponseItem>>> getAllUsers() async {
@@ -41,6 +43,7 @@ class RepositoryImpl implements Repository {
   Future<DataState<DetailResponse>> getUserDetail(String username) async {
     try {
       final userDetail = await api.getDetailUserResponse(
+        Constants.token,
         username,
       );
 
@@ -67,6 +70,7 @@ class RepositoryImpl implements Repository {
   ) async {
     try {
       final followers = await api.getUserFollowers(
+        Constants.token,
         username,
       );
 
@@ -93,6 +97,7 @@ class RepositoryImpl implements Repository {
   ) async {
     try {
       final following = await api.getUserFollowing(
+        Constants.token,
         username,
       );
 
@@ -119,6 +124,7 @@ class RepositoryImpl implements Repository {
   ) async {
     try {
       final search = await api.searchUserByUsername(
+        Constants.token,
         username,
       );
 
@@ -140,26 +146,22 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<DataState<List<RepositoryResponse>>> getUserRepositories(
-    String username,
-  ) async {
-    try {
-      final repos = await api.getUserRepositories(username);
+  Future<void> deleteAllFavorite() async {
+    return database.dao.deleteAllFavorite();
+  }
 
-      if (repos.response.statusCode == HttpStatus.ok) {
-        return DataSuccess(repos.data);
-      } else {
-        return DataError(
-          DioException(
-            error: repos.response.statusMessage,
-            type: DioExceptionType.badResponse,
-            response: repos.response,
-            requestOptions: repos.response.requestOptions,
-          ),
-        );
-      }
-    } on DioException catch (error) {
-      return DataError(error);
-    }
+  @override
+  Future<void> deleteFavorite(int userId) async {
+    return database.dao.deleteFavorite(userId);
+  }
+
+  @override
+  Future<List<FavoriteUser>> getAllFavorites() async {
+    return database.dao.getAllFavoriteUsers();
+  }
+
+  @override
+  Future<void> insertFavorite(FavoriteUser favorite) async {
+    return database.dao.insertUserToFavorite(favorite);
   }
 }

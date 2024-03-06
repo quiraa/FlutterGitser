@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `favorite` (`userId` INTEGER, `photo` TEXT, `username` TEXT, PRIMARY KEY (`userId`))');
+            'CREATE TABLE IF NOT EXISTS `favorite` (`id` INTEGER, `photo` TEXT, `username` TEXT, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -108,16 +108,7 @@ class _$AppDao extends AppDao {
             database,
             'favorite',
             (FavoriteUser item) => <String, Object?>{
-                  'userId': item.userId,
-                  'photo': item.photoUrl,
-                  'username': item.username
-                }),
-        _favoriteUserDeletionAdapter = DeletionAdapter(
-            database,
-            'favorite',
-            ['userId'],
-            (FavoriteUser item) => <String, Object?>{
-                  'userId': item.userId,
+                  'id': item.userId,
                   'photo': item.photoUrl,
                   'username': item.username
                 });
@@ -130,26 +121,28 @@ class _$AppDao extends AppDao {
 
   final InsertionAdapter<FavoriteUser> _favoriteUserInsertionAdapter;
 
-  final DeletionAdapter<FavoriteUser> _favoriteUserDeletionAdapter;
-
   @override
   Future<List<FavoriteUser>> getAllFavoriteUsers() async {
     return _queryAdapter.queryList(
         'SELECT * FROM favorite ORDER BY username ASC',
-        mapper: (Map<String, Object?> row) => FavoriteUser(
-            row['userId'] as int?,
-            row['photo'] as String?,
-            row['username'] as String?));
+        mapper: (Map<String, Object?> row) => FavoriteUser(row['id'] as int?,
+            row['photo'] as String?, row['username'] as String?));
+  }
+
+  @override
+  Future<void> deleteAllFavorite() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM favorite');
+  }
+
+  @override
+  Future<void> deleteFavorite(int userId) async {
+    await _queryAdapter.queryNoReturn('DELETE FROM favorite WHERE id = ?1',
+        arguments: [userId]);
   }
 
   @override
   Future<void> insertUserToFavorite(FavoriteUser favorite) async {
     await _favoriteUserInsertionAdapter.insert(
         favorite, OnConflictStrategy.replace);
-  }
-
-  @override
-  Future<void> deleteUserFromFavorite(FavoriteUser favorite) async {
-    await _favoriteUserDeletionAdapter.delete(favorite);
   }
 }
